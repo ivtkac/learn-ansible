@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -e
+
+# Install Ansible
+apt-get update
+apt-get upgrade -y
+apt-get install software-properties-common -y
+apt-add-repository ppa:ansible/ansible -y
+apt-get update
+apt-get install ansible -y
+
+# Setup SSH key for ansible user
+mkdir -p /home/ubuntu/.ssh
+cat <<'SSHKEY' >/home/ubuntu/.ssh/id_rsa
+${private_key}
+SSHKEY
+
+chmod 600 /home/ubuntu/.ssh/id_rsa
+chown -R ubuntu:ubuntu /home/ubuntu/.ssh
+
+cat <<'SSHCONFIG' >/home/ubuntu/.ssh/config
+Host *
+    StrictHostKeyChecking no
+    UserKnownHostsFile=/dev/null
+SSHCONFIG
+
+# Create Ansible inventory
+cat <<'INVENTORY' >>/etc/ansible/hosts
+[webservers]
+${inventory}
+INVENTORY
