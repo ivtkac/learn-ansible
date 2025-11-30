@@ -19,14 +19,11 @@ SSHKEY
 chmod 600 /home/ubuntu/.ssh/id_rsa
 chown -R ubuntu:ubuntu /home/ubuntu/.ssh
 
-cat <<'SSHCONFIG' >/home/ubuntu/.ssh/config
-Host *
-    StrictHostKeyChecking no
-    UserKnownHostsFile=/dev/null
-SSHCONFIG
-
 # Create Ansible inventory
 cat <<'INVENTORY' >>/etc/ansible/hosts
+[webservers:vars]
+ansible_ssh_private_key_file=/home/ubuntu/.ssh/id_rsa
+
 [webservers]
 ${inventory}
 INVENTORY
