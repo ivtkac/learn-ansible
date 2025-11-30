@@ -48,6 +48,14 @@ resource "aws_instance" "ansible_control_server" {
   key_name               = aws_key_pair.ansible_key_pair.key_name
   vpc_security_group_ids = [aws_security_group.ansible_sg.id]
 
+  user_data = <<EOF
+    sudo apt-get update
+    sudo apt-get upgrade -y
+    sudo apt-get install software-properties-common
+    sudo apt-add-repository ppa:ansible/ansible
+    sudo apt-get install ansible -y
+  EOF
+
   tags = {
     Name = "ansible-control"
   }
