@@ -17,3 +17,8 @@ variable "web_servers" {
   type    = list(string)
   default = ["web-1", "web-2", "web-3"]
 }
+
+variable "key_name" {
+  type    = string
+  default = "ansible-key"
+}

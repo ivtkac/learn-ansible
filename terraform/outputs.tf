@@ -5,6 +5,6 @@ output "ansible_control_server_public_ip" {
 }
 
 output "web_servers_public_ips" {
-    value = aws_instance.web_servers[*].public_ip
-    description = "Public IPs of web servers"
+  value       = aws_instance.web_servers[*].public_ip
+  description = "Public IPs of web servers"
 }
