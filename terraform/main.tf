@@ -62,9 +62,11 @@ resource "aws_instance" "ansible_control_server" {
 }
 
 resource "aws_instance" "web_servers" {
-  count         = length(var.web_servers)
-  ami           = var.ami
-  instance_type = var.instance
+  count                  = length(var.web_servers)
+  ami                    = var.ami
+  instance_type          = var.instance
+  vpc_security_group_ids = [aws_security_group.ansible_sg.id]
+
   tags = {
     Name = element(var.web_servers, count.index)
   }
