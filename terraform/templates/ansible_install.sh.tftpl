@@ -21,12 +21,18 @@ chown -R ubuntu:ubuntu /home/ubuntu/.ssh
 
 # Create Ansible inventory
 cat <<INVENTORY >>/etc/ansible/hosts
-[webservers:vars]
-ansible_ssh_private_key_file=/home/ubuntu/.ssh/id_rsa
-
 [webservers]
 %{ for server in webservers ~}
-${server.private_ip}       # ${server.tags.Name}
+${server.tags.Name} ansible_host=${server.private_ip}
 %{ endfor ~}
 
 INVENTORY
+
+cat <<ANSIBLECFG >/etc/ansible/ansible.cfg
+
+[defaults]
+inventory = /etc/ansible/hosts
+host_key_checking = False
+remote_user = ubuntu
+private_key_file = /home/ubuntu/.ssh/id_rsa
+ANSIBLECFG
