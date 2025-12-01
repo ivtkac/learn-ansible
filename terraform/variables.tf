@@ -15,7 +15,7 @@ variable "instance" {
 
 variable "web_servers" {
   type    = list(string)
-  default = ["web-1", "web-2", "web-3"]
+  default = ["proxy-server", "backend", "frontend"]
 }
 
 variable "key_name" {

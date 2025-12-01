@@ -1,0 +1,14 @@
+- name: Install Nginx
+  apt:
+    pkg: nginx
+    state: present
+  notify:
+    - enable nginx
+
+- name: Upload Nginx reverse proxy configuration template
+  ansible.builtin.template:
+    src: default.conf.j2
+    dest: /etc/nginx/sites-available/default
+    mode: '0644'
+  notify:
+    - restart nginx

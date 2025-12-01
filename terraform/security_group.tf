@@ -1,6 +1,6 @@
-resource "aws_security_group" "ansible_sg" {
-  name        = "ansible-security-group"
-  description = "Allow SSH and HTTP/HTTPS access"
+resource "aws_security_group" "ssh_sg" {
+  name        = "ssh-security-group"
+  description = "Allow SSH access"
 
   ingress {
     description = "SSH"
@@ -9,6 +9,15 @@ resource "aws_security_group" "ansible_sg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = {
+    Name = "ssh-sg"
+  }
+}
+
+resource "aws_security_group" "proxy_sg" {
+  name        = "proxy-security-group"
+  description = "Allow HTTP/HTTPS access for proxy server"
 
   ingress {
     description = "HTTP"
@@ -34,6 +43,6 @@ resource "aws_security_group" "ansible_sg" {
   }
 
   tags = {
-    Name = "ansible-sg"
+    Name = "proxy-sg"
   }
 }

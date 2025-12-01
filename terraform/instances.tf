@@ -1,12 +1,14 @@
 locals {
-  key_name = aws_key_pair.ansible_key_pair.key_name
+  key_name    = aws_key_pair.ansible_key_pair.key_name
+  allow_ssh   = aws_security_group.ssh_sg.id
+  allow_proxy = aws_security_group.proxy_sg.id
 }
 
 resource "aws_instance" "ansible_control_server" {
   ami                         = var.ami
   instance_type               = var.instance
   key_name                    = local.key_name
-  vpc_security_group_ids      = [aws_security_group.ansible_sg.id]
+  vpc_security_group_ids      = [local.allow_ssh]
   user_data_replace_on_change = true
 
   user_data = templatefile("${path.module}/templates/ansible_install.sh.tftpl", {
@@ -31,15 +33,6 @@ resource "aws_instance" "ansible_control_server" {
     source      = "${path.root}/../ansible"
     destination = "/home/ubuntu/ansible"
   }
-
-  provisioner "remote-exec" {
-    inline = [
-      "echo 'Waiting for web servers to be ready...'",
-      "sleep 60",
-      "cd /home/ubuntu/ansible",
-      "ansible-playbook playbook.yml"
-    ]
-  }
 }
 
 resource "aws_instance" "web_servers" {
@@ -47,7 +40,7 @@ resource "aws_instance" "web_servers" {
   ami                    = var.ami
   instance_type          = var.instance
   key_name               = local.key_name
-  vpc_security_group_ids = [aws_security_group.ansible_sg.id]
+  vpc_security_group_ids = var.web_servers[count.index] == "proxy-server" ? [local.allow_ssh, local.allow_proxy] : [local.allow_ssh]
 
   tags = {
     Name = element(var.web_servers, count.index)

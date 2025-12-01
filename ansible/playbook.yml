@@ -1,45 +1,14 @@
 ---
-- hosts: webservers
+- name: Apply common setup to all webservers
+  hosts: webservers
   gather_facts: true
-  become:  true
-  tasks:
-    - name: Update and upgrade apt packages
-      apt:
-        upgrade: yes
-        update_cache: yes
-        cache_valid_time: 86400
+  become: true
+  roles:
+    - common
 
-    - name: Install Nginx
-      apt:
-        pkg: nginx
-        state: present
-      notify:
-        - restart nginx
-
-    - name: Enable Nginx during boot
-      service:
-        name: nginx
-        state: started
-        enabled: true
-
-    - name: Create website directory
-      file:
-        path: /var/www/html
-        state: directory
-        owner: www-data
-        group: www-data
-        mode: '0755'
-
-    - name: Deploy custom index page
-      template:
-        src: templates/index.html.j2
-        dest: /var/www/html/index.html
-        owner: www-data
-        group: www-data
-        mode: '0644'
-      notify:
-        - restart nginx
-
-  handlers:
-    - name: restart nginx
-      service: name=nginx state=restarted
+- name: Configure and deploy proxy services
+  hosts: proxy-server
+  gather_facts: true
+  become: true
+  roles:
+    - proxy
