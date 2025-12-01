@@ -38,3 +38,5 @@ ansible.cfg
 
 # Lock files (optional - some teams commit this)
 # .terraform.lock.hcl
+ansible/*.retry
+ansible/.vault_pass
