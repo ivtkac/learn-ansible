@@ -19,6 +19,27 @@ resource "aws_instance" "ansible_control_server" {
   }
 
   depends_on = [aws_instance.web_servers]
+
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = tls_private_key.generated_key.private_key_pem
+    host        = self.public_ip
+  }
+
+  provisioner "file" {
+    source      = "${path.root}/../ansible"
+    destination = "/home/ubuntu/ansible"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "echo 'Waiting for web servers to be ready...'",
+      "sleep 60",
+      "cd /home/ubuntu/ansible",
+      "ansible-playbook playbook.yml"
+    ]
+  }
 }
 
 resource "aws_instance" "web_servers" {

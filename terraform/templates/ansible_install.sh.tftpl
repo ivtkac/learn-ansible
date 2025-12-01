@@ -25,11 +25,9 @@ cat <<INVENTORY >>/etc/ansible/hosts
 %{ for server in webservers ~}
 ${server.tags.Name} ansible_host=${server.private_ip}
 %{ endfor ~}
-
 INVENTORY
 
 cat <<ANSIBLECFG >/etc/ansible/ansible.cfg
-
 [defaults]
 inventory = /etc/ansible/hosts
 host_key_checking = False
