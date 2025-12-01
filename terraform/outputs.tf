@@ -8,3 +8,8 @@ output "web_servers_public_ips" {
   value       = aws_instance.web_servers[*].public_ip
   description = "Public IPs of web servers"
 }
+
+output "web_servers_public_dns" {
+  value       = aws_instance.web_servers[*].public_dns
+  description = "Public DNS of web servers"
+}
